@@ -3,8 +3,8 @@
 [![Latest Stable Version](https://img.shields.io/packagist/v/xauth/oauth2-xauthconnect.svg?label=Packagist&logo=packagist)](https://packagist.org/packages/xauth/oauth2-xauthconnect)
 [![Total Downloads](https://img.shields.io/packagist/dt/xauth/oauth2-xauthconnect.svg?label=Downloads&logo=packagist)](https://packagist.org/packages/xauth/oauth2-xauthconnect)
 [![License](https://img.shields.io/packagist/l/xauth/oauth2-xauthconnect.svg?label=Licence&logo=open-source-initiative)](https://packagist.org/packages/xauth/oauth2-xauthconnect)
-[![Tests](https://img.shields.io/github/actions/workflow/status/xauth/oauth2-xauthconnect/phpunit.yml?label=Tests&logo=github)](https://github.com/xauth/oauth2-xauthconnect/actions/workflows/phpunit.yml)
-[![Test Coverage](https://img.shields.io/codecov/c/github/xauth/oauth2-xauthconnect?label=Test%20Coverage&logo=codecov)](https://app.codecov.io/gh/xauth/oauth2-xauthconnect)
+[![Tests](https://img.shields.io/github/actions/workflow/status/xauth-ecosystem/oauth2-xauthconnect/phpunit.yml?label=Tests&logo=github)](https://github.com/xauth-ecosystem/oauth2-xauthconnect/actions/workflows/phpunit.yml)
+[![Test Coverage](https://img.shields.io/codecov/c/github/xauth-ecosystem/oauth2-xauthconnect?label=Test%20Coverage&logo=codecov)](https://app.codecov.io/gh/xauth/oauth2-xauthconnect)
 
 This package provides an OAuth 2.0 client provider for integrating with an XAuthConnect authorization server. It is built to work with the popular [`league/oauth2-client`](https://github.com/thephpleague/oauth2-client) package.
 
