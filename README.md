@@ -1,10 +1,10 @@
 # XAuthConnect Provider for The PHP League OAuth 2.0 Client
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/newlandpe/oauth2-xauthconnect.svg?label=Packagist&logo=packagist)](https://packagist.org/packages/newlandpe/oauth2-xauthconnect)
-[![Total Downloads](https://img.shields.io/packagist/dt/newlandpe/oauth2-xauthconnect.svg?label=Downloads&logo=packagist)](https://packagist.org/packages/newlandpe/oauth2-xauthconnect)
-[![License](https://img.shields.io/packagist/l/newlandpe/oauth2-xauthconnect.svg?label=Licence&logo=open-source-initiative)](https://packagist.org/packages/newlandpe/oauth2-xauthconnect)
-[![Tests](https://img.shields.io/github/actions/workflow/status/newlandpe/oauth2-xauthconnect/phpunit.yml?label=Tests&logo=github)](https://github.com/newlandpe/oauth2-xauthconnect/actions/workflows/phpunit.yml)
-[![Test Coverage](https://img.shields.io/codecov/c/github/newlandpe/oauth2-xauthconnect?label=Test%20Coverage&logo=codecov)](https://app.codecov.io/gh/newlandpe/oauth2-xauthconnect)
+[![Latest Stable Version](https://img.shields.io/packagist/v/xauth/oauth2-xauthconnect.svg?label=Packagist&logo=packagist)](https://packagist.org/packages/xauth/oauth2-xauthconnect)
+[![Total Downloads](https://img.shields.io/packagist/dt/xauth/oauth2-xauthconnect.svg?label=Downloads&logo=packagist)](https://packagist.org/packages/xauth/oauth2-xauthconnect)
+[![License](https://img.shields.io/packagist/l/xauth/oauth2-xauthconnect.svg?label=Licence&logo=open-source-initiative)](https://packagist.org/packages/xauth/oauth2-xauthconnect)
+[![Tests](https://img.shields.io/github/actions/workflow/status/xauth/oauth2-xauthconnect/phpunit.yml?label=Tests&logo=github)](https://github.com/xauth/oauth2-xauthconnect/actions/workflows/phpunit.yml)
+[![Test Coverage](https://img.shields.io/codecov/c/github/xauth/oauth2-xauthconnect?label=Test%20Coverage&logo=codecov)](https://app.codecov.io/gh/xauth/oauth2-xauthconnect)
 
 This package provides an OAuth 2.0 client provider for integrating with an XAuthConnect authorization server. It is built to work with the popular [`league/oauth2-client`](https://github.com/thephpleague/oauth2-client) package.
 
@@ -26,7 +26,7 @@ This provider allows you to easily implement the "Login with XAuthConnect" funct
 Install the package via Composer:
 
 ```bash
-composer require newlandpe/oauth2-xauthconnect
+composer require xauth/oauth2-xauthconnect
 ```
 
 This package now requires `guzzlehttp/guzzle` v7.0 or greater.
@@ -41,7 +41,7 @@ If you're developing this library locally or need to use it as a path repository
 ```json
 {
     "require": {
-        "newlandpe/oauth2-xauthconnect": "@dev"
+        "xauth/oauth2-xauthconnect": "@dev"
     },
     "repositories": [
         {
