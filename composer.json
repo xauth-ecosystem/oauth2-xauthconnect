@@ -1,5 +1,5 @@
 {
-    "name": "newlandpe/oauth2-xauthconnect",
+    "name": "xauth/oauth2-xauthconnect",
     "description": "XAuthConnect provider for The PHP League OAuth2-Client",
     "license": "LicenseRef-CSSM-Unlimited-2.0",
     "authors": [
