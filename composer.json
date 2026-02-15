@@ -1,6 +1,6 @@
 {
     "name": "xauth/oauth2-xauthconnect",
-    "description": "XAuthConnect provider for The PHP League OAuth2-Client",
+    "description": "XAuthConnect provider for The PHP League OAuth2-Client.",
     "license": "LicenseRef-CSSM-Unlimited-2.0",
     "authors": [
         {
