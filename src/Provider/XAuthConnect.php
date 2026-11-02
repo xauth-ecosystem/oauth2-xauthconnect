@@ -180,7 +180,7 @@ class XAuthConnect extends AbstractProvider
      *
      * @param  string                    $idToken       The ID token string.
      * @param  string|null               $expectedNonce The nonce sent in the authorization request to mitigate replay attacks.
-     * @return array<mixed>               The decoded and validated claims as an array.
+     * @return array<mixed>              The decoded and validated claims as an array.
      * @throws IdentityProviderException If any part of the validation fails.
      */
     private function getValidatedClaims(string $idToken, ?string $expectedNonce) : array
@@ -262,8 +262,8 @@ class XAuthConnect extends AbstractProvider
      * Gets the base URL for requesting an access token.
      *
      * @param  array<string, mixed> $params Query parameters for the token URL.
-     * @return string            The access token URL.
-     * @throws \RuntimeException If the endpoint URL is not configured.
+     * @return string               The access token URL.
+     * @throws \RuntimeException    If the endpoint URL is not configured.
      */
     public function getBaseAccessTokenUrl(array $params) : string
     {
@@ -273,8 +273,8 @@ class XAuthConnect extends AbstractProvider
     /**
      * Gets the URL for requesting the resource owner's details.
      *
-     * @param  AccessToken $token The access token to use for the request.
-     * @return string           The resource owner details URL.
+     * @param  AccessToken       $token The access token to use for the request.
+     * @return string            The resource owner details URL.
      * @throws \RuntimeException If the endpoint URL is not configured.
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token) : string
@@ -295,9 +295,9 @@ class XAuthConnect extends AbstractProvider
     /**
      * Sends a request to the introspection endpoint to validate a token.
      *
-     * @param  string $token The token to introspect.
-     * @return array<string, mixed> The introspection result as an array.
-     * @throws \RuntimeException    If the endpoint URL is not configured.
+     * @param  string                    $token The token to introspect.
+     * @return array<string, mixed>      The introspection result as an array.
+     * @throws \RuntimeException         If the endpoint URL is not configured.
      * @throws \UnexpectedValueException If the response is not a JSON object.
      */
     public function introspectToken(string $token) : array
@@ -367,10 +367,10 @@ class XAuthConnect extends AbstractProvider
     /**
      * Checks the provider response for errors.
      *
-     * @param  ResponseInterface         $response The provider's response.
-     * @param  array<string, mixed>|string $data   The decoded response data.
+     * @param  ResponseInterface           $response The provider's response.
+     * @param  array<string, mixed>|string $data     The decoded response data.
      * @return void
-     * @throws IdentityProviderException If the response contains an error.
+     * @throws IdentityProviderException   If the response contains an error.
      */
     protected function checkResponse(ResponseInterface $response, $data) : void
     {
@@ -386,8 +386,8 @@ class XAuthConnect extends AbstractProvider
      * Creates a resource owner object from a successful user details request.
      *
      * @param  array<string, mixed> $response The response from the resource owner details endpoint.
-     * @param  AccessToken      $token    The access token used for the request.
-     * @return XAuthConnectUser The created resource owner.
+     * @param  AccessToken          $token    The access token used for the request.
+     * @return XAuthConnectUser     The created resource owner.
      */
     protected function createResourceOwner(array $response, AccessToken $token) : XAuthConnectUser
     {
