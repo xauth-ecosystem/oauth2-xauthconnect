@@ -48,8 +48,10 @@ class XAuthConnect extends AbstractProvider
         parent::__construct($options, $collaborators);
         $this->options = array_merge($this->options, $options);
 
-        if (! empty($this->options['issuer'])) {
-            $this->discoverEndpoints($this->options['issuer']);
+        $issuer = $this->options['issuer'] ?? null;
+
+        if (is_string($issuer) && '' !== $issuer) {
+            $this->discoverEndpoints($issuer);
         }
 
         $urlOptions = [
@@ -62,8 +64,10 @@ class XAuthConnect extends AbstractProvider
         ];
 
         foreach ($urlOptions as $option) {
-            if (! empty($this->options[$option])) {
-                $this->{$option} = $this->options[$option];
+            $value = $this->options[$option] ?? null;
+
+            if (is_string($value) && '' !== $value) {
+                $this->{$option} = $value;
             }
         }
 
@@ -94,16 +98,30 @@ class XAuthConnect extends AbstractProvider
                 throw new \RuntimeException('Failed to parse discovery document: ' . json_last_error_msg());
             }
 
-            $this->baseAuthorizationUrl = $data['authorization_endpoint'] ?? null;
-            $this->baseAccessTokenUrl = $data['token_endpoint'] ?? null;
-            $this->resourceOwnerDetailsUrl = $data['userinfo_endpoint'] ?? null;
-            $this->introspectUrl = $data['introspection_endpoint'] ?? null;
-            $this->revokeUrl = $data['revocation_endpoint'] ?? null;
-            $this->jwksUrl = $data['jwks_uri'] ?? null;
+            // A valid JSON value that is not an object contains no endpoints.
+            $endpoints = is_array($data) ? $data : [];
+
+            $this->baseAuthorizationUrl = self::stringOrNull($endpoints['authorization_endpoint'] ?? null);
+            $this->baseAccessTokenUrl = self::stringOrNull($endpoints['token_endpoint'] ?? null);
+            $this->resourceOwnerDetailsUrl = self::stringOrNull($endpoints['userinfo_endpoint'] ?? null);
+            $this->introspectUrl = self::stringOrNull($endpoints['introspection_endpoint'] ?? null);
+            $this->revokeUrl = self::stringOrNull($endpoints['revocation_endpoint'] ?? null);
+            $this->jwksUrl = self::stringOrNull($endpoints['jwks_uri'] ?? null);
 
         } catch (\Exception $e) {
             throw new \RuntimeException('Failed to discover endpoints: ' . $e->getMessage(), 0, $e);
         }
+    }
+
+    /**
+     * Returns the value when it is a string, or null otherwise.
+     *
+     * @param  mixed       $value The value to check.
+     * @return string|null The value as a string or null.
+     */
+    private static function stringOrNull(mixed $value) : ?string
+    {
+        return is_string($value) ? $value : null;
     }
 
     /**
