@@ -17,7 +17,7 @@ class XAuthConnectUser implements ResourceOwnerInterface
     /**
      * Creates a new resource owner.
      *
-     * @param  array  $response  The raw response data from the provider.
+     * @param array $response The raw response data from the provider.
      */
     public function __construct(array $response)
     {

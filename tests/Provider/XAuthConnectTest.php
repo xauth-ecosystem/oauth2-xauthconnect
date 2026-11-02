@@ -9,15 +9,15 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Response;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Token\AccessToken;
+use Mockery as m;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Mockery as m;
 
 class XAuthConnectTest extends TestCase
 {
     protected XAuthConnect $provider;
 
-    protected function setUp(): void
+    protected function setUp() : void
     {
         $discoveryDoc = [
             'authorization_endpoint' => 'http://127.0.0.1:8010/xauth/authorize',
@@ -42,7 +42,7 @@ class XAuthConnectTest extends TestCase
         ], ['httpClient' => $client]);
     }
 
-    public function tearDown(): void
+    public function tearDown() : void
     {
         m::close();
         parent::tearDown();
@@ -344,7 +344,7 @@ class XAuthConnectTest extends TestCase
         $this->assertNotNull($token->getValues()['id_token_claims']);
     }
 
-    public static function idTokenValidationProvider(): array
+    public static function idTokenValidationProvider() : array
     {
         $basePayload = [
             'iss' => 'http://127.0.0.1:8010',

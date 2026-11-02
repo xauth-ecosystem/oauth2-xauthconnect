@@ -36,8 +36,8 @@ class XAuthConnect extends AbstractProvider
     /**
      * Initializes the provider with options.
      *
-     * @param  array  $options  Provider options, including 'issuer', 'clientId', 'clientSecret', and 'redirectUri'.
-     * @param  array  $collaborators  An array of collaborators that may be used to override this provider's default behavior.
+     * @param  array                     $options       Provider options, including 'issuer', 'clientId', 'clientSecret', and 'redirectUri'.
+     * @param  array                     $collaborators An array of collaborators that may be used to override this provider's default behavior.
      * @throws \InvalidArgumentException If required options are missing.
      */
     public function __construct(array $options = [], array $collaborators = [])
@@ -45,7 +45,7 @@ class XAuthConnect extends AbstractProvider
         parent::__construct($options, $collaborators);
         $this->options = array_merge($this->options, $options);
 
-        if (!empty($this->options['issuer'])) {
+        if (! empty($this->options['issuer'])) {
             $this->discoverEndpoints($this->options['issuer']);
         }
 
@@ -59,7 +59,7 @@ class XAuthConnect extends AbstractProvider
         ];
 
         foreach ($urlOptions as $option) {
-            if (!empty($this->options[$option])) {
+            if (! empty($this->options[$option])) {
                 $this->{$option} = $this->options[$option];
             }
         }
@@ -74,9 +74,8 @@ class XAuthConnect extends AbstractProvider
     /**
      * Populates OIDC endpoint properties by discovering them from the issuer's .well-known configuration.
      *
-     * @param  string  $issuer  The issuer URL.
+     * @param  string            $issuer The issuer URL.
      * @return void
-     *
      * @throws \RuntimeException If discovery fails or the document is invalid.
      */
     protected function discoverEndpoints(string $issuer) : void
@@ -88,7 +87,7 @@ class XAuthConnect extends AbstractProvider
             $response = $httpClient->get($wellKnownUrl);
             $data = json_decode((string) $response->getBody(), true);
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
+            if (JSON_ERROR_NONE !== json_last_error()) {
                 throw new \RuntimeException('Failed to parse discovery document: ' . json_last_error_msg());
             }
 
@@ -107,10 +106,9 @@ class XAuthConnect extends AbstractProvider
     /**
      * Requests an access token and automatically validates the ID token if received.
      *
-     * @param  mixed  $grant  The grant type to use.
-     * @param  array  $options  Additional options for the grant.
-     * @return AccessTokenInterface The access token, including validated ID token claims.
-     *
+     * @param  mixed                     $grant   The grant type to use.
+     * @param  array                     $options Additional options for the grant.
+     * @return AccessTokenInterface      The access token, including validated ID token claims.
      * @throws IdentityProviderException If the ID token validation fails.
      */
     public function getAccessToken($grant, array $options = []) : AccessTokenInterface
@@ -134,10 +132,9 @@ class XAuthConnect extends AbstractProvider
     /**
      * Performs cryptographic validation of the ID token's signature and claims.
      *
-     * @param  string  $idToken  The ID token string.
-     * @param  string|null  $expectedNonce  The nonce sent in the authorization request to mitigate replay attacks.
-     * @return array The decoded and validated claims as an array.
-     *
+     * @param  string                    $idToken       The ID token string.
+     * @param  string|null               $expectedNonce The nonce sent in the authorization request to mitigate replay attacks.
+     * @return array                     The decoded and validated claims as an array.
      * @throws IdentityProviderException If any part of the validation fails.
      */
     private function getValidatedClaims(string $idToken, ?string $expectedNonce) : array
@@ -152,11 +149,11 @@ class XAuthConnect extends AbstractProvider
         }
 
         $aud = is_array($decoded->aud) ? $decoded->aud : [$decoded->aud];
-        if (!in_array($this->options['clientId'], $aud, true)) {
+        if (! in_array($this->options['clientId'], $aud, true)) {
             throw new IdentityProviderException('Invalid audience claim', 0, $idToken);
         }
 
-        if ($expectedNonce !== null) {
+        if (null !== $expectedNonce) {
             if (empty($decoded->nonce)) {
                 throw new IdentityProviderException('ID token is missing nonce claim', 0, $idToken);
             }
@@ -203,7 +200,7 @@ class XAuthConnect extends AbstractProvider
     /**
      * Gets the base URL for requesting an access token.
      *
-     * @param  array  $params  Query parameters for the token URL.
+     * @param  array  $params Query parameters for the token URL.
      * @return string The access token URL.
      */
     public function getBaseAccessTokenUrl(array $params) : string
@@ -214,8 +211,8 @@ class XAuthConnect extends AbstractProvider
     /**
      * Gets the URL for requesting the resource owner's details.
      *
-     * @param  AccessToken  $token  The access token to use for the request.
-     * @return string The resource owner details URL.
+     * @param  AccessToken $token The access token to use for the request.
+     * @return string      The resource owner details URL.
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token) : string
     {
@@ -235,8 +232,8 @@ class XAuthConnect extends AbstractProvider
     /**
      * Sends a request to the introspection endpoint to validate a token.
      *
-     * @param  string  $token  The token to introspect.
-     * @return array The introspection result as an array.
+     * @param  string $token The token to introspect.
+     * @return array  The introspection result as an array.
      */
     public function introspectToken(string $token) : array
     {
@@ -256,7 +253,7 @@ class XAuthConnect extends AbstractProvider
     /**
      * Sends a request to the revocation endpoint to invalidate a token.
      *
-     * @param  string  $token  The token to revoke.
+     * @param  string $token The token to revoke.
      * @return void
      */
     public function revokeToken(string $token) : void
@@ -297,15 +294,14 @@ class XAuthConnect extends AbstractProvider
     /**
      * Checks the provider response for errors.
      *
-     * @param  ResponseInterface  $response  The provider's response.
-     * @param  array|string  $data  The decoded response data.
+     * @param  ResponseInterface         $response The provider's response.
+     * @param  array|string              $data     The decoded response data.
      * @return void
-     *
      * @throws IdentityProviderException If the response contains an error.
      */
-    protected function checkResponse(ResponseInterface $response, $data): void
+    protected function checkResponse(ResponseInterface $response, $data) : void
     {
-        if (!empty($data['error'])) {
+        if (! empty($data['error'])) {
             $code = $response->getStatusCode();
             $error = $data['error_description'] ?? $data['error'];
             throw new IdentityProviderException($error, $code, $data);
@@ -315,8 +311,8 @@ class XAuthConnect extends AbstractProvider
     /**
      * Creates a resource owner object from a successful user details request.
      *
-     * @param  array  $response  The response from the resource owner details endpoint.
-     * @param  AccessToken  $token The access token used for the request.
+     * @param  array            $response The response from the resource owner details endpoint.
+     * @param  AccessToken      $token    The access token used for the request.
      * @return XAuthConnectUser The created resource owner.
      */
     protected function createResourceOwner(array $response, AccessToken $token) : XAuthConnectUser
