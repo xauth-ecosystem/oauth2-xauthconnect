@@ -374,10 +374,11 @@ class XAuthConnect extends AbstractProvider
      */
     protected function checkResponse(ResponseInterface $response, $data) : void
     {
-        if (! empty($data['error'])) {
+        if (is_array($data) && ! empty($data['error'])) {
             $code = $response->getStatusCode();
             $error = $data['error_description'] ?? $data['error'];
-            throw new IdentityProviderException($error, $code, $data);
+            $message = is_scalar($error) ? (string) $error : 'Unknown error';
+            throw new IdentityProviderException($message, $code, $data);
         }
     }
 
