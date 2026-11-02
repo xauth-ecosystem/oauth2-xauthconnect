@@ -87,7 +87,7 @@ class XAuthConnect extends AbstractProvider
 
         try {
             $httpClient = $this->getHttpClient();
-            $response = $httpClient->get($wellKnownUrl);
+            $response = $httpClient->request('GET', $wellKnownUrl);
             $data = json_decode((string) $response->getBody(), true);
 
             if (JSON_ERROR_NONE !== json_last_error()) {
@@ -175,7 +175,7 @@ class XAuthConnect extends AbstractProvider
      */
     private function fetchJwks() : array
     {
-        $response = $this->getHttpClient()->get($this->jwksUrl);
+        $response = $this->getHttpClient()->request('GET', $this->jwksUrl);
         $data = json_decode((string) $response->getBody(), true);
         return $data;
     }
