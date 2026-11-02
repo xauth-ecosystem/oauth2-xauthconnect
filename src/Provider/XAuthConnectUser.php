@@ -10,14 +10,14 @@ use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 class XAuthConnectUser implements ResourceOwnerInterface
 {
     /**
-     * @var array Raw response data.
+     * @var array<string, mixed> Raw response data.
      */
     protected array $response;
 
     /**
      * Creates a new resource owner.
      *
-     * @param array $response The raw response data from the provider.
+     * @param array<string, mixed> $response The raw response data from the provider.
      */
     public function __construct(array $response)
     {
@@ -47,7 +47,7 @@ class XAuthConnectUser implements ResourceOwnerInterface
     /**
      * Gets all resource owner details as an array.
      *
-     * @return array The raw response data.
+     * @return array<string, mixed> The raw response data.
      */
     public function toArray() : array
     {
