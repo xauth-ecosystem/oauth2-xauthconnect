@@ -79,7 +79,6 @@ class XAuthConnectTest extends TestCase
     {
         $reflection = new \ReflectionClass($this->provider);
         $method = $reflection->getMethod('getDefaultScopes');
-        $method->setAccessible(true);
         $this->assertEquals(['openid', 'profile:nickname', 'profile:uuid'], $method->invoke($this->provider));
     }
 
@@ -87,7 +86,6 @@ class XAuthConnectTest extends TestCase
     {
         $reflection = new \ReflectionClass($this->provider);
         $method = $reflection->getMethod('getScopeSeparator');
-        $method->setAccessible(true);
         $this->assertEquals(' ', $method->invoke($this->provider));
     }
 
@@ -95,7 +93,6 @@ class XAuthConnectTest extends TestCase
     {
         $reflection = new \ReflectionClass($this->provider);
         $method = $reflection->getMethod('getPkceMethod');
-        $method->setAccessible(true);
         $this->assertEquals('S256', $method->invoke($this->provider));
     }
 
@@ -117,7 +114,6 @@ class XAuthConnectTest extends TestCase
     {
         $reflection = new \ReflectionClass($this->provider);
         $method = $reflection->getMethod('checkResponse');
-        $method->setAccessible(true);
 
         $response = new Response(200, [], json_encode(['ok' => true]));
         $data = json_decode($response->getBody(), true);
