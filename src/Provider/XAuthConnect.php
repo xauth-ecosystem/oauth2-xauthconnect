@@ -298,6 +298,7 @@ class XAuthConnect extends AbstractProvider
      * @param  string $token The token to introspect.
      * @return array<string, mixed> The introspection result as an array.
      * @throws \RuntimeException    If the endpoint URL is not configured.
+     * @throws \UnexpectedValueException If the response is not a JSON object.
      */
     public function introspectToken(string $token) : array
     {
@@ -311,7 +312,14 @@ class XAuthConnect extends AbstractProvider
             'body' => $this->buildQueryString($params)
         ]);
 
-        return $this->getParsedResponse($request);
+        $result = $this->getParsedResponse($request);
+
+        if (! is_array($result)) {
+            throw new \UnexpectedValueException('Invalid introspection response.');
+        }
+
+        /** @var array<string, mixed> $result */
+        return $result;
     }
 
     /**
