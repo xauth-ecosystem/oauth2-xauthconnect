@@ -31,13 +31,16 @@ class XAuthConnect extends AbstractProvider
 
     public ?string $jwksUrl = null;
 
+    /**
+     * @var array<string, mixed>
+     */
     protected array $options = [];
 
     /**
      * Initializes the provider with options.
      *
-     * @param  array                     $options       Provider options, including 'issuer', 'clientId', 'clientSecret', and 'redirectUri'.
-     * @param  array                     $collaborators An array of collaborators that may be used to override this provider's default behavior.
+     * @param  array<string, mixed>      $options       Provider options, including 'issuer', 'clientId', 'clientSecret', and 'redirectUri'.
+     * @param  array<string, mixed>      $collaborators An array of collaborators that may be used to override this provider's default behavior.
      * @throws \InvalidArgumentException If required options are missing.
      */
     public function __construct(array $options = [], array $collaborators = [])
@@ -107,7 +110,7 @@ class XAuthConnect extends AbstractProvider
      * Requests an access token and automatically validates the ID token if received.
      *
      * @param  mixed                     $grant   The grant type to use.
-     * @param  array                     $options Additional options for the grant.
+     * @param  array<string, mixed>      $options Additional options for the grant.
      * @return AccessTokenInterface      The access token, including validated ID token claims.
      * @throws IdentityProviderException If the ID token validation fails.
      */
@@ -134,7 +137,7 @@ class XAuthConnect extends AbstractProvider
      *
      * @param  string                    $idToken       The ID token string.
      * @param  string|null               $expectedNonce The nonce sent in the authorization request to mitigate replay attacks.
-     * @return array                     The decoded and validated claims as an array.
+     * @return array<string, mixed>      The decoded and validated claims as an array.
      * @throws IdentityProviderException If any part of the validation fails.
      */
     private function getValidatedClaims(string $idToken, ?string $expectedNonce) : array
@@ -168,7 +171,7 @@ class XAuthConnect extends AbstractProvider
     /**
      * Fetches the JSON Web Key Set (JWKS) from the provider's jwks_uri.
      *
-     * @return array The full JWKS structure as an array.
+     * @return array<string, mixed> The full JWKS structure as an array.
      */
     private function fetchJwks() : array
     {
@@ -200,7 +203,7 @@ class XAuthConnect extends AbstractProvider
     /**
      * Gets the base URL for requesting an access token.
      *
-     * @param  array  $params Query parameters for the token URL.
+     * @param  array<string, mixed> $params Query parameters for the token URL.
      * @return string The access token URL.
      */
     public function getBaseAccessTokenUrl(array $params) : string
@@ -233,7 +236,7 @@ class XAuthConnect extends AbstractProvider
      * Sends a request to the introspection endpoint to validate a token.
      *
      * @param  string $token The token to introspect.
-     * @return array  The introspection result as an array.
+     * @return array<string, mixed> The introspection result as an array.
      */
     public function introspectToken(string $token) : array
     {
@@ -274,7 +277,7 @@ class XAuthConnect extends AbstractProvider
     /**
      * Gets the default scopes used by this provider.
      *
-     * @return array A list of default scopes.
+     * @return list<string> A list of default scopes.
      */
     protected function getDefaultScopes() : array
     {
@@ -295,7 +298,7 @@ class XAuthConnect extends AbstractProvider
      * Checks the provider response for errors.
      *
      * @param  ResponseInterface         $response The provider's response.
-     * @param  array|string              $data     The decoded response data.
+     * @param  array<string, mixed>|string $data   The decoded response data.
      * @return void
      * @throws IdentityProviderException If the response contains an error.
      */
@@ -311,7 +314,7 @@ class XAuthConnect extends AbstractProvider
     /**
      * Creates a resource owner object from a successful user details request.
      *
-     * @param  array            $response The response from the resource owner details endpoint.
+     * @param  array<string, mixed> $response The response from the resource owner details endpoint.
      * @param  AccessToken      $token    The access token used for the request.
      * @return XAuthConnectUser The created resource owner.
      */
