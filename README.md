@@ -29,7 +29,7 @@ Install the package via Composer:
 composer require xauth/oauth2-xauthconnect
 ```
 
-This package now requires `guzzlehttp/guzzle` v7.0 or greater.
+This package now requires `guzzlehttp/guzzle` v8.2 or greater.
 
 ### Installing from a local path (for development)
 
