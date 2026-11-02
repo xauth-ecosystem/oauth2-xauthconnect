@@ -125,6 +125,23 @@ class XAuthConnect extends AbstractProvider
     }
 
     /**
+     * Returns the endpoint URL, or throws when the endpoint is not configured.
+     *
+     * @param  string|null       $url  The configured endpoint URL.
+     * @param  string            $name The name of the endpoint option, used in the error message.
+     * @return string            The configured endpoint URL.
+     * @throws \RuntimeException If the endpoint URL is not configured.
+     */
+    private static function requireUrl(?string $url, string $name) : string
+    {
+        if (null === $url) {
+            throw new \RuntimeException("The '{$name}' endpoint is not configured.");
+        }
+
+        return $url;
+    }
+
+    /**
      * Requests an access token and automatically validates the ID token if received.
      *
      * @param  mixed                     $grant   The grant type to use.
@@ -193,7 +210,7 @@ class XAuthConnect extends AbstractProvider
      */
     private function fetchJwks() : array
     {
-        $response = $this->getHttpClient()->request('GET', $this->jwksUrl);
+        $response = $this->getHttpClient()->request('GET', self::requireUrl($this->jwksUrl, 'jwksUrl'));
         $data = json_decode((string) $response->getBody(), true);
         return $data;
     }
@@ -211,33 +228,36 @@ class XAuthConnect extends AbstractProvider
     /**
      * Gets the base URL for provider authorization.
      *
-     * @return string The authorization URL.
+     * @return string            The authorization URL.
+     * @throws \RuntimeException If the endpoint URL is not configured.
      */
     public function getBaseAuthorizationUrl() : string
     {
-        return $this->baseAuthorizationUrl;
+        return self::requireUrl($this->baseAuthorizationUrl, 'baseAuthorizationUrl');
     }
 
     /**
      * Gets the base URL for requesting an access token.
      *
      * @param  array<string, mixed> $params Query parameters for the token URL.
-     * @return string The access token URL.
+     * @return string            The access token URL.
+     * @throws \RuntimeException If the endpoint URL is not configured.
      */
     public function getBaseAccessTokenUrl(array $params) : string
     {
-        return $this->baseAccessTokenUrl;
+        return self::requireUrl($this->baseAccessTokenUrl, 'baseAccessTokenUrl');
     }
 
     /**
      * Gets the URL for requesting the resource owner's details.
      *
      * @param  AccessToken $token The access token to use for the request.
-     * @return string      The resource owner details URL.
+     * @return string           The resource owner details URL.
+     * @throws \RuntimeException If the endpoint URL is not configured.
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token) : string
     {
-        return $this->resourceOwnerDetailsUrl;
+        return self::requireUrl($this->resourceOwnerDetailsUrl, 'resourceOwnerDetailsUrl');
     }
 
     /**
@@ -255,6 +275,7 @@ class XAuthConnect extends AbstractProvider
      *
      * @param  string $token The token to introspect.
      * @return array<string, mixed> The introspection result as an array.
+     * @throws \RuntimeException    If the endpoint URL is not configured.
      */
     public function introspectToken(string $token) : array
     {
@@ -264,7 +285,7 @@ class XAuthConnect extends AbstractProvider
             'client_secret' => $this->clientSecret,
         ];
 
-        $request = $this->createRequest(self::METHOD_POST, $this->introspectUrl, null, [
+        $request = $this->createRequest(self::METHOD_POST, self::requireUrl($this->introspectUrl, 'introspectUrl'), null, [
             'body' => $this->buildQueryString($params)
         ]);
 
@@ -274,8 +295,9 @@ class XAuthConnect extends AbstractProvider
     /**
      * Sends a request to the revocation endpoint to invalidate a token.
      *
-     * @param  string $token The token to revoke.
+     * @param  string            $token The token to revoke.
      * @return void
+     * @throws \RuntimeException If the endpoint URL is not configured.
      */
     public function revokeToken(string $token) : void
     {
@@ -285,7 +307,7 @@ class XAuthConnect extends AbstractProvider
             'client_secret' => $this->clientSecret,
         ];
 
-        $request = $this->createRequest(self::METHOD_POST, $this->revokeUrl, null, [
+        $request = $this->createRequest(self::METHOD_POST, self::requireUrl($this->revokeUrl, 'revokeUrl'), null, [
             'body' => $this->buildQueryString($params)
         ]);
 
