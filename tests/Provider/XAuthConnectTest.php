@@ -298,6 +298,142 @@ class XAuthConnectTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function testRequireUrlThrowsExceptionWhenEndpointIsNull()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("The 'baseAuthorizationUrl' endpoint is not configured.");
+
+        $this->provider->baseAuthorizationUrl = null;
+        $this->provider->getBaseAuthorizationUrl();
+    }
+
+    public function testGetAccessTokenThrowsExceptionWhenIdTokenIsNotString()
+    {
+        $this->expectException(IdentityProviderException::class);
+        $this->expectExceptionMessage('ID token must be a string');
+
+        $mock = new MockHandler([
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'access_token' => 'mock_access_token',
+                'id_token' => ['invalid_id_token_array'],
+            ])),
+        ]);
+
+        $client = new HttpClient(['handler' => $mock]);
+        $this->provider->setHttpClient($client);
+
+        $this->provider->getAccessToken('authorization_code', ['code' => 'mock_code']);
+    }
+
+    public function testGetAccessTokenThrowsExceptionWhenSessionNonceIsNotScalar()
+    {
+        $this->expectException(IdentityProviderException::class);
+        $this->expectExceptionMessage('Invalid nonce stored in session');
+
+        $mock = new MockHandler([
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'access_token' => 'mock_access_token',
+                'id_token' => 'mock_id_token_string',
+            ])),
+        ]);
+
+        $client = new HttpClient(['handler' => $mock]);
+        $this->provider->setHttpClient($client);
+
+        $_SESSION['oauth2nonce'] = ['invalid_nonce_array'];
+
+        $this->provider->getAccessToken('authorization_code', ['code' => 'mock_code']);
+    }
+
+    public function testGetAccessTokenThrowsExceptionWhenJwksIsNotArray()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Failed to parse JWKS document.');
+
+        $mock = new MockHandler([
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'access_token' => 'mock_access_token',
+                'id_token' => 'header.payload.signature',
+            ])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode('not_an_array')),
+        ]);
+
+        $client = new HttpClient(['handler' => $mock]);
+        $this->provider->setHttpClient($client);
+
+        $this->provider->getAccessToken('authorization_code', ['code' => 'mock_code']);
+    }
+
+    public function testGetAccessTokenThrowsExceptionWhenIssuerOptionIsMissingForIdToken()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("The 'issuer' option is required to validate the ID token.");
+
+        $privateKey = openssl_pkey_new([
+            'private_key_bits' => 2048,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        ]);
+        $publicKeyDetails = openssl_pkey_get_details($privateKey);
+
+        $kid = 'test-key-id';
+        $idToken = JWT::encode([
+            'iss' => 'http://127.0.0.1:8010',
+            'aud' => 'test_client_123',
+            'exp' => time() + 3600,
+            'sub' => 'test-sub',
+        ], $privateKey, 'RS256', $kid);
+
+        $jwks = [
+            'keys' => [
+                [
+                    'kty' => 'RSA',
+                    'alg' => 'RS256',
+                    'kid' => $kid,
+                    'n' => rtrim(strtr(base64_encode($publicKeyDetails['rsa']['n']), '+/', '-_'), '='),
+                    'e' => rtrim(strtr(base64_encode($publicKeyDetails['rsa']['e']), '+/', '-_'), '='),
+                ]
+            ]
+        ];
+
+        $mock = new MockHandler([
+            new Response(200, ['Content-Type' => 'application/json'], json_encode([
+                'access_token' => 'mock_access_token',
+                'id_token' => $idToken
+            ])),
+            new Response(200, ['Content-Type' => 'application/json'], json_encode($jwks)),
+        ]);
+
+        $client = new HttpClient(['handler' => $mock]);
+
+        $provider = new XAuthConnect([
+            'clientId'                => 'test_client_123',
+            'clientSecret'            => 'test_secret_key',
+            'redirectUri'             => 'http://127.0.0.1:8081/client.php',
+            'baseAuthorizationUrl'    => 'http://127.0.0.1:8010/xauth/authorize',
+            'baseAccessTokenUrl'      => 'http://127.0.0.1:8010/xauth/token',
+            'resourceOwnerDetailsUrl' => 'http://127.0.0.1:8010/xauth/user',
+            'introspectUrl'           => 'http://127.0.0.1:8010/xauth/introspect',
+            'revokeUrl'               => 'http://127.0.0.1:8010/xauth/revoke',
+            'jwksUrl'                 => 'http://127.0.0.1:8010/xauth/jwks',
+        ], ['httpClient' => $client]);
+
+        $provider->getAccessToken('authorization_code', ['code' => 'mock_code']);
+    }
+
+    public function testIntrospectTokenThrowsExceptionForNonArrayResponse()
+    {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessage('Invalid introspection response.');
+
+        $mock = new MockHandler([
+            new Response(200, ['Content-Type' => 'application/json'], json_encode('not an array'))
+        ]);
+        $client = new HttpClient(['handler' => $mock]);
+        $this->provider->setHttpClient($client);
+
+        $this->provider->introspectToken('test-token');
+    }
+
     #[DataProvider('idTokenValidationProvider')]
     public function testIdTokenValidation(array $payload, ?string $nonce, ?string $exception, ?string $exceptionMessage)
     {
