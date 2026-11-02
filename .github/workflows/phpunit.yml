@@ -10,19 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        php-version: ['8.4']
-
-    name: P${{ matrix.php-version }}
-
     steps:
     - uses: actions/checkout@v3
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ matrix.php-version }}
+        php-version: '8.4'
         extensions: mbstring, pdo_sqlite, pdo_mysql
         tools: composer:v2
         coverage: xdebug
