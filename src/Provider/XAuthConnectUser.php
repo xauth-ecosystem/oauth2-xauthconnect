@@ -31,7 +31,9 @@ class XAuthConnectUser implements ResourceOwnerInterface
      */
     public function getId() : ?string
     {
-        return $this->response['sub'] ?? $this->response['profile:uuid'] ?? null;
+        $id = $this->response['sub'] ?? $this->response['profile:uuid'] ?? null;
+
+        return is_scalar($id) ? (string) $id : null;
     }
 
     /**
@@ -41,7 +43,9 @@ class XAuthConnectUser implements ResourceOwnerInterface
      */
     public function getNickname() : ?string
     {
-        return $this->response['nickname'] ?? $this->response['profile:nickname'] ?? null;
+        $nickname = $this->response['nickname'] ?? $this->response['profile:nickname'] ?? null;
+
+        return is_scalar($nickname) ? (string) $nickname : null;
     }
 
     /**
