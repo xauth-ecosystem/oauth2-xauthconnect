@@ -180,7 +180,7 @@ class XAuthConnect extends AbstractProvider
      *
      * @param  string                    $idToken       The ID token string.
      * @param  string|null               $expectedNonce The nonce sent in the authorization request to mitigate replay attacks.
-     * @return array<string, mixed>      The decoded and validated claims as an array.
+     * @return array<mixed>               The decoded and validated claims as an array.
      * @throws IdentityProviderException If any part of the validation fails.
      */
     private function getValidatedClaims(string $idToken, ?string $expectedNonce) : array
@@ -208,29 +208,43 @@ class XAuthConnect extends AbstractProvider
             }
         }
 
-        return (array) $decoded;
+        return get_object_vars($decoded);
     }
 
     /**
      * Fetches the JSON Web Key Set (JWKS) from the provider's jwks_uri.
      *
      * @return array<string, mixed> The full JWKS structure as an array.
+     * @throws \RuntimeException    If the JWKS document is invalid.
      */
     private function fetchJwks() : array
     {
         $response = $this->getHttpClient()->request('GET', self::requireUrl($this->jwksUrl, 'jwksUrl'));
         $data = json_decode((string) $response->getBody(), true);
+
+        if (! is_array($data)) {
+            throw new \RuntimeException('Failed to parse JWKS document.');
+        }
+
+        /** @var array<string, mixed> $data */
         return $data;
     }
 
     /**
      * Gets the configured issuer URL from the provider options.
      *
-     * @return string The issuer URL.
+     * @return string                    The issuer URL.
+     * @throws \InvalidArgumentException If the issuer option is missing.
      */
     private function getConfiguredIssuer() : string
     {
-        return $this->options['issuer'];
+        $issuer = $this->options['issuer'] ?? null;
+
+        if (! is_string($issuer) || '' === $issuer) {
+            throw new \InvalidArgumentException("The 'issuer' option is required to validate the ID token.");
+        }
+
+        return $issuer;
     }
 
     /**
