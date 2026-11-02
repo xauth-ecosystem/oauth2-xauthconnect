@@ -156,10 +156,18 @@ class XAuthConnect extends AbstractProvider
         $idToken = $accessToken->getValues()['id_token'] ?? null;
 
         if ($idToken) {
+            if (! is_string($idToken)) {
+                throw new IdentityProviderException('ID token must be a string', 0, $idToken);
+            }
+
             $nonce = $_SESSION['oauth2nonce'] ?? null;
             unset($_SESSION['oauth2nonce']);
 
-            $validatedClaims = $this->getValidatedClaims($idToken, $nonce);
+            if (null !== $nonce && ! is_scalar($nonce)) {
+                throw new IdentityProviderException('Invalid nonce stored in session', 0, $nonce);
+            }
+
+            $validatedClaims = $this->getValidatedClaims($idToken, null === $nonce ? null : (string) $nonce);
             $values = array_merge($accessToken->getValues(), ['id_token_claims' => $validatedClaims]);
             $accessToken = new AccessToken(array_merge($accessToken->jsonSerialize(), $values));
         }
