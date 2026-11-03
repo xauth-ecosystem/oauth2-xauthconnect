@@ -1,12 +1,21 @@
+# Composer
 /vendor/
 composer.lock
 composer.phar
-.DS_Store
-.idea/
-.vscode/
-build/
-*.log
 *.phar
+
+# PHPUnit
 .phpunit.result.cache
 clover.xml
 coverage-report/
+
+# Build
+build/
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Logs
+*.log
